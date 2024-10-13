@@ -12,6 +12,21 @@ class EnCodonTokenizer(PreTrainedTokenizer):
 
     SUPPORTED_TYPES = ["dna", "rna"]
 
+    @staticmethod
+    def get_all_codons(seq_type="dna"):
+        """
+        Get all possible codons.
+        """
+        seq_type = seq_type.lower()
+        assert (
+            seq_type in EnCodonTokenizer.SUPPORTED_TYPES
+        ), f"seq_type should be either 'dna' or 'rna'. Got {seq_type}!"
+
+        if seq_type == "dna":
+            return ["".join(codon) for codon in product("ACGT", repeat=3)]
+        else:
+            return ["".join(codon) for codon in product("ACGU", repeat=3)]
+
     def __init__(
         self,
         cls_token="<CLS>",
@@ -88,7 +103,7 @@ class EnCodonTokenizer(PreTrainedTokenizer):
 
         self.token_type_mode = kwargs.get("token_type_mode", "regular")
         self.build_token_type_encoder()
-
+    
     @property
     def vocab_size(self):
         return len(self.encoder)
