@@ -1,5 +1,6 @@
 import re
 from transformers import PreTrainedTokenizer
+from itertools import product
 
 class DeCodonTokenizer(PreTrainedTokenizer):
     """
@@ -8,6 +9,21 @@ class DeCodonTokenizer(PreTrainedTokenizer):
     """
 
     SUPPORTED_TYPES = ["dna", "rna"]
+    
+    @staticmethod
+    def get_all_codons(seq_type="dna"):
+        """
+        Get all possible codons.
+        """
+        seq_type = seq_type.lower()
+        assert (
+            seq_type in DeCodonTokenizer.SUPPORTED_TYPES
+        ), f"seq_type should be either 'dna' or 'rna'. Got {seq_type}!"
+
+        if seq_type == "dna":
+            return ["".join(codon) for codon in product("ACGT", repeat=3)]
+        else:
+            return ["".join(codon) for codon in product("ACGU", repeat=3)]
 
     def __init__(
         self,
@@ -85,6 +101,20 @@ class DeCodonTokenizer(PreTrainedTokenizer):
 
         self.token_type_mode = kwargs.get("token_type_mode", "regular")
         self.build_token_type_encoder()
+        
+    def set_organism_tokens(self, organism_tokens):
+        """
+        Add organism tokens to the tokenizer.
+        """
+        vocab_size = len(self.encoder)
+        for i, token in enumerate(organism_tokens):
+            self.encoder[token] = vocab_size + i
+            self.decoder[vocab_size + i] = token
+
+        self.organism_tokens = organism_tokens
+        self.compiled_regex = re.compile(
+            "|".join(self.codons + self.special_tokens + organism_tokens + [r"\S"])
+        )
 
     @property
     def vocab_size(self):
