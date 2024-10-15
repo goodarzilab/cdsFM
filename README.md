@@ -1,6 +1,6 @@
 # Repository of Codon-based Foundation Models (EnCodon & DeCodon)
 ![cdsFM](./assets/sketch.png)
-This repository contains the code for the EnCodon and DeCodon models, codon-resolution large language models pre-trained on the NCBI Genomes database described in the paper "[A Suite of Foundation Models Captures the Contextual Interplay Between Codons](#)". 
+This repository contains the code for the EnCodon and DeCodon models, codon-resolution large language models pre-trained on the NCBI Genomes database described in the paper "[A Suite of Foundation Models Captures the Contextual Interplay Between Codons](https://www.biorxiv.org/content/10.1101/2024.10.10.617568v1)". 
 
 ## Get started 🚀
 ### Installation
