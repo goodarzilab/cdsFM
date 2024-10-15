@@ -17,29 +17,26 @@ pip install git+https://github.com/goodarzilab/cdsFM.git
 pip install cdsFM
 ``` -->
 
-### Usage
-Now that you have cdsFM installed, you can fetch the pre-trained models and use it for your downstream in a number of possible options:
+## Applications
+Now that you have cdsFM installed, you can use `AutoEnCodon` and `AutoDeCodon` classes which serve as wrappers around the pre-trained models. Here are some examples on how to use them:
 
-#### Sequence Embedding Extraction
-Following is an example of how to use the EnCodon and DeCodon models to extract sequence embeddings:\
+### Sequence Embedding Extraction with EnCodon
+Following is an example of how to use the EnCodon model to extract sequence embeddings:
 
 ```python
-from cdsFM import AutoEnCodon, AutoDeCodon
+from cdsFM import AutoEnCodon
 
 # Load your dataframe containing sequences
-df = ...
+seqs = ...
 
 # Load a pre-trained EnCodon model
-model = AutoEnCodon.from_pretrained("goodarzilab/EnCodon-620M")
-
-# Load a pre-trained DeCodon model
-model = AutoDeCodon.from_pretrained("goodarzilab/DeCodon-200M")
+model = AutoEnCodon.from_pretrained("goodarzilab/encodon-620M")
 
 # Extract embeddings
-embeddings = model.extract_embeddings(df)
+embeddings = model.get_embeddings(seqs, batch_size=32)
 ```
 
-#### Sequence Generation with DeCodon
+### Sequence Generation with DeCodon
 You can generate organism-specific coding sequences with DeCodon simply by:
 
 ```python
@@ -49,16 +46,11 @@ from cdsFM import AutoDeCodon
 model = AutoDeCodon.from_pretrained("goodarzilab/DeCodon-200M")
 
 # Generate!
-sequences = model.generate(
-    prompt=None,
+gen_seqs = model.generate(
     taxid=9606, # NCBI Taxonomy ID for Homo sapiens
-    num_return_sequences=10, # Number of sequences to return
+    num_return_sequences=32, # Number of sequences to return
     max_length=1024, # Maximum length of the generated sequence
-    temperature=0.1, # Temperature for controlling randomness
-    top_k=50, # Top-k sampling
-    batch_size=10, # Batch size for generation
-    do_sample=True, # Enable sampling
-    verbose=True, # Print progress
+    batch_size=8, # Batch size for generation
 )
 
 ```
@@ -82,17 +74,22 @@ A collection of pre-trained checkpoints of EnCodon & DeCodon models are availabl
 | EnCodon | encodon-620M | 620M | Pre-trained checkpoint | [🤗](https://huggingface.co/goodarzilab/EnCodon-620M) |
 | EnCodon | encodon-620M-euk | 620M | Eukaryotic-expert | [🤗](https://huggingface.co/goodarzilab/EnCodon-620M-euk) |
 | DeCodon | decodon-200M | 200M | Pre-trained checkpoint | [🤗](https://huggingface.co/goodarzilab/DeCodon-200M) |
+| DeCodon | decodon-200M-euk | 200M | Eukaryotic-expert | [🤗](https://huggingface.co/goodarzilab/DeCodon-200M-euk) |
 
 ---
 
 ## Citation
 
-If you find this repository useful in your work, please add a relevant citation to
-either of our associated papers:
-
-
-[EnCodon & DeCodon paper](#):
 ```bibtex
+@article{Naghipourfar2024,
+  title = {A Suite of Foundation Models Captures the Contextual Interplay Between Codons},
+  url = {http://dx.doi.org/10.1101/2024.10.10.617568},
+  DOI = {10.1101/2024.10.10.617568},
+  publisher = {Cold Spring Harbor Laboratory},
+  author = {Naghipourfar,  Mohsen and Chen,  Siyu and Howard,  Mathew and Macdonald,  Christian and Saberi,  Ali and Hagen,  Timo and Mofrad,  Mohammad and Coyote-Maestas,  Willow and Goodarzi,  Hani},
+  year = {2024},
+  month = oct 
+}
 ```
 
 
